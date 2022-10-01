@@ -1,5 +1,7 @@
 package com.order.Controller;
 
+import com.order.Dao.pojo.Goods;
+import com.order.Dao.pojo.User;
 import com.order.Service.BusinessService;
 import com.order.Service.RootService;
 import com.order.Service.UserService;
@@ -27,7 +29,38 @@ public class UserController {
      */
     @RequestMapping("/login")
     public Response GetUserRole(String UID) {
-        return null;
+        User user = userService.FindUserByUID(UID);
+        Map<String ,String> map = new HashMap<>();
+        if (user.getRole() == 1) {
+            map.put("role","1");
+            return new Response().easyReturn(map);
+        }
+        else if (user.getRole() == 2) {
+            map.put("role","2");
+            return new Response().easyReturn(map);
+        }
+        else if (user.getRole() == 0) {
+            map.put("role","3");
+            return new Response().easyReturn(map);
+        }
+        else {
+            return new Response().badReturn("UID 错误");
+        }
+    }
+    @RequestMapping("/add/good")
+    public Response addGoods(String UID, Goods goods) {
+        User user = userService.FindUserByUID(UID);
+        if (user.getRole() != 1)
+            return new Response().badReturn("UID 错误");
+        return businessService.addGoods(UID,goods);
+    }
+    @RequestMapping("/delete/goods")
+    public Response deleteGoods(Integer goodsId) {
+        if (businessService.findGoodsById(goodsId) == null) {
+            return new Response().badReturn("商品ID错误");
+        }
+        businessService.deleteGoods(goodsId);
+        return new Response().easyReturn("true");
     }
 
 }

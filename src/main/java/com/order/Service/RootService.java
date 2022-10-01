@@ -1,10 +1,10 @@
 package com.order.Service;
 
-import com.order.Dao.pojo.Root;
+import com.order.Dao.pojo.User;
 
 public interface RootService {
-    Root FindRootByUID(String uid);
+    User FindRootByUID(String uid);
 
-    Root Login(String username, String password);
+    User Login(String username, String password);
 
 }

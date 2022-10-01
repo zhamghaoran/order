@@ -1,14 +1,19 @@
 package com.order.Service;
 
-import com.order.Dao.pojo.Business;
+import com.order.Dao.pojo.Goods;
+import com.order.Dao.pojo.User;
 import com.order.util.Response;
 
 public interface BusinessService {
-    Business FindBusinessByUID(String uid);
+    User FindBusinessByUID(String uid);
 
-    Response addGoods(String name, Integer price, String description, String picture, Integer businessID);
+    Response addGoods(String name, Goods goods);
 
-    Business Login(String username, String password);
+    User Login(String username, String password);
 
     String Register(String username, String password);
+
+    Goods findGoodsById(Integer goodsId);
+
+    void deleteGoods(Integer goodsId);
 }

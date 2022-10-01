@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends UserMessage{
+public class User {
+    private Integer id;
+    private Integer role;
 
 }

@@ -8,6 +8,10 @@ import org.springframework.data.relational.core.sql.In;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Business extends UserMessage{
-
+public class Goods {
+    private Integer price;
+    private String name;
+    private String description;
+    private String picture;
+    private Integer belong;
 }
