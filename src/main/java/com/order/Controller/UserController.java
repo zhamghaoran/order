@@ -27,24 +27,7 @@ public class UserController {
      */
     @RequestMapping("/login")
     public Response GetUserRole(String UID) {
-        Map<String, Map<String, String>> result = new HashMap<>();
-        Map<String, String> re = new HashMap<>();
-        if (userService.FindUserByUID(UID) != null) {
-            re.put("CUSTOMER", "0");
-            result.put("enum", re);
-            return new Response().easyReturn(result);
-        }
-        if (rootService.FindRootByUID(UID) != null) {
-            re.put("OPERATOR", "2");
-            result.put("enmu", re);
-            return new Response().easyReturn(result);
-        }
-        if (businessService.FindBusinessByUID(UID) != null) {
-            re.put("BUSINESSMAN", "1");
-            result.put("enum", re);
-            return new Response().easyReturn(result);
-        }
-        return new Response().easyReturn("查无此人");
+        return null;
     }
 
 }
