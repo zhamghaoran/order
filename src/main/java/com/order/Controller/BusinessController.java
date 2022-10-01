@@ -19,6 +19,8 @@ public class BusinessController {
                              String description,
                              String picture,
                              Integer businessID) {
+
         return businessService.addGoods(name,price,description,picture,businessID);
+
     }
 }

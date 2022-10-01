@@ -8,9 +8,6 @@ import org.springframework.data.relational.core.sql.In;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Root {
-    private String username;
-    private String password;
-    private Integer id;
+public class Root extends UserMessage{
 
 }

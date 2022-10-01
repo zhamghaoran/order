@@ -10,6 +10,7 @@ import com.order.util.Response;
 import com.order.util.TokenCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -24,14 +25,14 @@ public class LoginController {
     @Autowired
     private RootService rootService;
 
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login",method = RequestMethod.POST)
     public Response Login(String username, String password) {
         Map<String, Map<String, Object>> result = new HashMap<>();
         Map<String, Object> re = new HashMap<>();
         User login = userService.Login(username, password);
         if (login != null) {
             re.put("CUSTOMER", "0");
-            String token = new TokenCheck().addToken(username, password, 0);
+            String token = new TokenCheck().addToken(login, 0);
             re.put("token", token);
             re.put("message", login);
             result.put("enum", re);
@@ -39,7 +40,7 @@ public class LoginController {
         }
         Root root = rootService.Login(username, password);
         if (root != null) {
-            String token = new TokenCheck().addToken(username, password, 2);
+            String token = new TokenCheck().addToken(root, 2);
             re.put("OPERATOR", "2");
             re.put("token", token);
             re.put("message", root);
@@ -48,7 +49,7 @@ public class LoginController {
         }
         Business business = businessService.Login(username, password);
         if (business != null) {
-            String token = new TokenCheck().addToken(username, password, 1);
+            String token = new TokenCheck().addToken(business,1);
             re.put("token", token);
             re.put("BUSINESSMAN", "1");
             re.put("message", business);
@@ -58,7 +59,7 @@ public class LoginController {
         return new Response().easyReturn("查无此人");
     }
 
-    @RequestMapping("/register")
+    @RequestMapping(value = "/register",method = RequestMethod.PATCH)
     public Response Register(String username, String password, Integer enumCode) {
         String register = "";
         if (enumCode == 1) {
