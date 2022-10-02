@@ -4,6 +4,7 @@ import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
 import com.order.Service.BusinessService;
+import com.order.Service.GoodsService;
 import com.order.mapper.BusinessMapper;
 import com.order.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import java.util.List;
 public class BusinessServiceImpl implements BusinessService {
     @Autowired
     private BusinessMapper businessMapper;
+    @Autowired
+    private GoodsService goodsService;
 
     @Override
     public User FindBusinessByUID(String uid) {
