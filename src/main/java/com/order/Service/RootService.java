@@ -11,7 +11,7 @@ public interface RootService {
 
     void addBusiness(User user);
 
-    void DeleteBusiness(User user) ;
+    boolean DeleteBusiness(Integer BusinessId) ;
 
     List<User> QueryAllBusiness();
 

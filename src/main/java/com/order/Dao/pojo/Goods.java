@@ -13,5 +13,5 @@ public class Goods {
     private String name;
     private String description;
     private String picture;
-    private Integer belong;
+    private String belong;
 }

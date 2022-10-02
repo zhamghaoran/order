@@ -50,6 +50,13 @@ public class UserController {
             return new Response().badReturn("UID 错误");
         }
     }
+
+    /**
+     * 添加商品
+     * @param UID
+     * @param goods
+     * @return
+     */
     @RequestMapping("/add/good")
     public Response addGoods(String UID, Goods goods) {
         User user = userService.FindUserByUID(UID);
@@ -57,6 +64,12 @@ public class UserController {
             return new Response().badReturn("UID 错误");
         return businessService.addGoods(UID,goods);
     }
+
+    /**
+     * 删除商品
+     * @param goodsId
+     * @return
+     */
     @RequestMapping("/delete/goods")
     public Response deleteGoods(Integer goodsId) {
         if (businessService.findGoodsById(goodsId) == null) {
@@ -72,8 +85,8 @@ public class UserController {
 
     //新增一个订单
     @RequestMapping("/add/record")
-    public Boolean addRecord(Orders orders){
-        if(orderService.save(orders)){
+    public Boolean addRecord(Orders orders) {
+        if(orderService.save(orders)) {
             return true;
         }
         return false;
@@ -81,8 +94,8 @@ public class UserController {
 
     //删除一个订单
     @RequestMapping("/delete/record")
-    public Boolean deleteRecord(Long id){
-        if(orderService.removeById(id)){
+    public Boolean deleteRecord(Long id) {
+        if(orderService.removeById(id)) {
             return true;
         }
         return false;
@@ -142,5 +155,15 @@ public class UserController {
     public Boolean deleteRecords(String ids){
         if(!orderService.deleteMore(ids))return false;
         return true;
+    }
+    @RequestMapping("/query/business")
+    public Response QueryBusiness() {
+        return new Response().easyReturn(businessService.getAllBusiness());
+    }
+    @RequestMapping("/delete/Business")
+    public Response DeleteBusiness(Integer BusinessID) {
+        return new Response().easyReturn(rootService.DeleteBusiness(BusinessID));
+
+
     }
 }

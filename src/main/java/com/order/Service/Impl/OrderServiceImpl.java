@@ -26,7 +26,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         entity.setArriveOrNot(false);
         entity.setId(null);
         int cnt = orderMapper.insert(entity);
-        if(cnt>0){
+        if (cnt > 0) {
             return true;
         }
         return false;
@@ -34,7 +34,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     @Override
     public boolean addMore(Long sellId, String goodsIdStr, Long buyId) {
-        String[]  goodsId = goodsIdStr.split(",");
+        String[] goodsId = goodsIdStr.split(",");
         try {
             for (int i = 0; i < goodsId.length; i++) {
                 Orders orders = new Orders();
@@ -45,7 +45,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
                     throw new Exception("出错辣");
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -61,7 +61,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
                     throw new Exception("出错辣");
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -70,7 +70,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     public List<Orders> userQuery(Long id) {
         QueryWrapper<Orders> wrapper = new QueryWrapper<Orders>();
-        wrapper.eq("buyId",id);
+        wrapper.eq("buyId", id);
         List<Orders> list = null;
         list = orderMapper.selectList(wrapper);
         return list;
@@ -78,20 +78,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     public List<Orders> BusinessQuery(Long id) {
         QueryWrapper<Orders> wrapper = new QueryWrapper<>();
-        wrapper.eq("sellId",id);
+        wrapper.eq("sellId", id);
         List<Orders> list = null;
         list = orderMapper.selectList(wrapper);
         return list;
     }
+
     @Override
     public Boolean arrive(Long id) throws Exception {
         Orders order = orderMapper.selectById(id);
-        if (order.getArriveOrNot()){
+        if (order.getArriveOrNot()) {
             throw new Exception("这个订单已经完成");
         }
         order.setArriveOrNot(true);
         int cnt = orderMapper.updateById(order);
-        if (cnt>0)return true;
+        if (cnt > 0) return true;
         return false;
     }
 
@@ -103,7 +104,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
                 log.info(ids[i]);
                 arrive(Long.parseLong(ids[i]));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

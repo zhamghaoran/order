@@ -23,8 +23,8 @@ public class RootService implements com.order.Service.RootService {
     }
 
     @Override
-    public void DeleteBusiness(User user) {
-
+    public boolean DeleteBusiness(Integer businessId) {
+        return false;
     }
 
     @Override
