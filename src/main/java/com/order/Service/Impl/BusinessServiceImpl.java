@@ -1,6 +1,7 @@
 package com.order.Service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
@@ -14,6 +15,7 @@ import com.order.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.annotation.ElementType;
 import java.util.List;
 
 @Service
@@ -31,9 +33,11 @@ public class BusinessServiceImpl implements BusinessService {
     public Response addGoods(String UID, Goods goods) {
         goods.setBelong(UID);
         int insert = goodsMapper.insert(goods);
-        return new Response().easyReturn(insert);
+        if (insert >= 0)
+            return new Response().easyReturn(insert);
+        else
+            return new Response().badReturn("添加商品失败");
     }
-
 
 
     @Override
@@ -43,14 +47,18 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     @Override
-    public void deleteGoods(Integer goodsId) {
-        businessMapper.deleteGoodById(goodsId);
+    public Response deleteGoods(Integer goodsId) {
+        int i = businessMapper.deleteById(goodsId);
+        if (i >= 0)
+            return new Response().easyReturn("删除成功");
+        else
+            return new Response().badReturn("删除失败");
     }
 
     @Override
     public List<User> getAllBusiness() {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getRole,1);
+        queryWrapper.eq(User::getRole, 1);
         return userMapper.selectList(queryWrapper);
     }
 }

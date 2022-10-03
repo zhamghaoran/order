@@ -14,7 +14,7 @@ public interface BusinessService {
 
     Goods findGoodsById(Integer goodsId);
 
-    void deleteGoods(Integer goodsId);
+    Response deleteGoods(Integer goodsId);
 
 
 

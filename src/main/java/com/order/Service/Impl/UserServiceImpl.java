@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         User user = new User(UID,1);
         Map<String,String> map = new HashMap<>();
         if (userMapper.insert(user) != 0) {
-            map.put("role","1");
+            map.put("role","0");
             return new Response().easyReturn(map);
         } else {
             map.put("role","-1");

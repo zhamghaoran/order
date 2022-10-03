@@ -1,6 +1,5 @@
 package com.order.Controller;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
@@ -11,6 +10,7 @@ import com.order.Service.UserService;
 import com.order.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class UserController {
     @Autowired
     private BusinessService businessService;
     @Autowired
-    OrderService orderService;
+    private OrderService orderService;
 
     /**
      * 待定，需要修改
@@ -37,6 +37,9 @@ public class UserController {
     @RequestMapping("/login")
     public Response GetUserRole(String UID) {
         User user = userService.FindUserByUID(UID);
+        if (user == null) {
+            return userService.Register(UID);
+        }
         Map<String, String> map = new HashMap<>();
         if (user.getRole() == 1) {
             map.put("role", "1");
@@ -47,9 +50,8 @@ public class UserController {
         } else if (user.getRole() == 0) {
             map.put("role", "3");
             return new Response().easyReturn(map);
-        } else {
-            return userService.Register(UID);
         }
+        return null;
     }
 
     /**
@@ -59,7 +61,7 @@ public class UserController {
      * @param goods
      * @return
      */
-    @RequestMapping("/add/good")
+    @RequestMapping(value = "/add/good",method = RequestMethod.POST)
     public Response addGoods(String UID, Goods goods) {
         User user = userService.FindUserByUID(UID);
         if (user.getRole() != 1)
@@ -78,10 +80,8 @@ public class UserController {
         if (businessService.findGoodsById(goodsId) == null) {
             return new Response().badReturn("商品ID错误");
         }
-        businessService.deleteGoods(goodsId);
-        return new Response().easyReturn("true");
+        return businessService.deleteGoods(goodsId);
     }
-
 
     //新增一个订单
     @RequestMapping("/add/record")

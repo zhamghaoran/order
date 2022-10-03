@@ -35,19 +35,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
     @Override
     public boolean addMore(Long sellId, String goodsIdStr, Long buyId) {
         String[] goodsId = goodsIdStr.split(",");
-        try {
-            for (int i = 0; i < goodsId.length; i++) {
-                Orders orders = new Orders();
-                orders.setBuyId(buyId);
-                orders.setSellId(sellId);
-                orders.setGoodsId(Long.parseLong(goodsId[i]));
-                if (!save(orders)) {
-                    throw new Exception("出错辣");
-                }
+        for (int i = 0; i < goodsId.length; i++) {
+            Orders orders = new Orders();
+            orders.setBuyId(buyId);
+            orders.setSellId(sellId);
+            orders.setGoodsId(Long.parseLong(goodsId[i]));
+            if (!save(orders)) {
+                return false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
         }
         return true;
     }
@@ -55,15 +50,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
     @Override
     public boolean deleteMore(String idStr) {
         String[] ids = idStr.split(",");
-        try {
-            for (int i = 0; i < ids.length; i++) {
-                if (!this.removeById(Long.parseLong(ids[i]))) {
-                    throw new Exception("出错辣");
-                }
+        for (int i = 0; i < ids.length; i++) {
+            if (!this.removeById(Long.parseLong(ids[i]))) {
+                return false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
         }
         return true;
     }
@@ -92,21 +82,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         }
         order.setArriveOrNot(true);
         int cnt = orderMapper.updateById(order);
-        if (cnt > 0) return true;
-        return false;
+        return cnt > 0;
     }
 
     @Override
     public Boolean arriveMore(String idStr) {
         String[] ids = idStr.split(",");
-        try {
-            for (int i = 0; i < ids.length; i++) {
-                log.info(ids[i]);
-                arrive(Long.parseLong(ids[i]));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        for (int i = 0; i < ids.length; i++) {
+            //log.info(ids[i]);
+            arrive(Long.parseLong(ids[i]));
         }
         return true;
     }

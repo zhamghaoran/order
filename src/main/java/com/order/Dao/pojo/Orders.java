@@ -12,6 +12,7 @@ import java.sql.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class Orders {
     @TableField("buyId")
     private Long buyId;
