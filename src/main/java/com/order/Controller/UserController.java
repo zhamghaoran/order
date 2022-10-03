@@ -1,5 +1,6 @@
 package com.order.Controller;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
@@ -24,35 +25,36 @@ public class UserController {
     private RootService rootService;
     @Autowired
     private BusinessService businessService;
+    @Autowired
+    OrderService orderService;
 
     /**
      * 待定，需要修改
+     *
      * @param UID
      * @return
      */
     @RequestMapping("/login")
     public Response GetUserRole(String UID) {
         User user = userService.FindUserByUID(UID);
-        Map<String ,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         if (user.getRole() == 1) {
-            map.put("role","1");
+            map.put("role", "1");
             return new Response().easyReturn(map);
-        }
-        else if (user.getRole() == 2) {
-            map.put("role","2");
+        } else if (user.getRole() == 2) {
+            map.put("role", "2");
             return new Response().easyReturn(map);
-        }
-        else if (user.getRole() == 0) {
-            map.put("role","3");
+        } else if (user.getRole() == 0) {
+            map.put("role", "3");
             return new Response().easyReturn(map);
-        }
-        else {
-            return new Response().badReturn("UID 错误");
+        } else {
+            return userService.Register(UID);
         }
     }
 
     /**
      * 添加商品
+     *
      * @param UID
      * @param goods
      * @return
@@ -61,12 +63,13 @@ public class UserController {
     public Response addGoods(String UID, Goods goods) {
         User user = userService.FindUserByUID(UID);
         if (user.getRole() != 1)
-            return new Response().badReturn("UID 错误");
-        return businessService.addGoods(UID,goods);
+            return new Response().badReturn("权限不足");
+        return businessService.addGoods(UID, goods);
     }
 
     /**
      * 删除商品
+     *
      * @param goodsId
      * @return
      */
@@ -80,90 +83,85 @@ public class UserController {
     }
 
 
-    @Autowired
-    OrderService orderService;
-
     //新增一个订单
     @RequestMapping("/add/record")
-    public Boolean addRecord(Orders orders) {
-        if(orderService.save(orders)) {
-            return true;
+    public Response addRecord(Orders orders) {
+        if (orderService.save(orders)) {
+            return new Response().easyReturn("success");
         }
-        return false;
+        return new Response().badReturn("failed");
     }
 
     //删除一个订单
     @RequestMapping("/delete/record")
-    public Boolean deleteRecord(Long id) {
-        if(orderService.removeById(id)) {
-            return true;
+    public Response deleteRecord(Long id) {
+        if (orderService.removeById(id)) {
+            return new Response().easyReturn("success");
         }
-        return false;
+        return new Response().badReturn("failed");
     }
 
     //根据用户的id查询所有的订单
     @RequestMapping("/query/user/records")
-    public List<Orders> UserQueryRecords(Long id){
+    public Response UserQueryRecords(Long id) {
         List<Orders> list = null;
         list = orderService.userQuery(id);
-        return list;
+        return new Response().easyReturn(list);
     }
 
     //根据商家的id查询所有订单
     @RequestMapping("/query/business/records")
-    public List<Orders> BusinessQueryRecords(Long id){
+    public Response BusinessQueryRecords(Long id) {
         List<Orders> list = null;
         list = orderService.BusinessQuery(id);
-        return list;
+        return new Response().easyReturn(list);
     }
 
     //根据id查询单个订单
     @RequestMapping("/query/record")
-    public Orders QueryById(Long id){
+    public Response QueryById(Long id) {
         Orders orders = new Orders();
         orders = orderService.selectById(id);
-        return orders;
+        return new Response().easyReturn(orders);
     }
 
     //用户点击完成订单
     @RequestMapping("/finish/record")
-    public Boolean finishRecord(Long id){
-        try {
-            if(orderService.arrive(id)){
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public Response finishRecord(Long id) {
+        if (orderService.arrive(id)) {
+            return new Response().easyReturn("success");
         }
-        return false;
+        return new Response().easyReturn("failed");
     }
 
     //批量完成
     @RequestMapping("/finish/records")
-    public Boolean finishRecords(String ids){
-        if(!orderService.arriveMore(ids))return false;
-        return true;
+    public Response finishRecords(String ids) {
+        if (!orderService.arriveMore(ids)) return new Response().badReturn("failed");
+        return new Response().easyReturn("success");
     }
+
     //批量添加
     @RequestMapping("/add/records")
-    public Boolean addRecords(Long sellId,String goodsIds,Long buyId){
-        if(!orderService.addMore(sellId,goodsIds,buyId))return false;
-        return true;
+    public Response addRecords(Long sellId, String goodsIds, Long buyId) {
+        if (!orderService.addMore(sellId, goodsIds, buyId)) return new Response().badReturn("failed");
+        return new Response().easyReturn("success");
     }
+
     //批量删除
     @RequestMapping("/delete/records")
-    public Boolean deleteRecords(String ids){
-        if(!orderService.deleteMore(ids))return false;
-        return true;
+    public Response deleteRecords(String ids) {
+        if (!orderService.deleteMore(ids)) return new Response().badReturn("failed");
+        return new Response().easyReturn("success");
     }
+
     @RequestMapping("/query/business")
     public Response QueryBusiness() {
         return new Response().easyReturn(businessService.getAllBusiness());
     }
+
     @RequestMapping("/delete/Business")
     public Response DeleteBusiness(Integer BusinessID) {
         return new Response().easyReturn(rootService.DeleteBusiness(BusinessID));
-
-
     }
 }

@@ -12,7 +12,7 @@ public interface OrderService extends IService<Orders> {
 
     List<Orders> BusinessQuery(Long id);
 
-    Boolean arrive(Long id) throws Exception;
+    Boolean arrive(Long id);
 
     Orders selectById(Long id);
 

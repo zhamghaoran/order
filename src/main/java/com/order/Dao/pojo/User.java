@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private Integer id;
+    private String id;
     private Integer role;
 
 }

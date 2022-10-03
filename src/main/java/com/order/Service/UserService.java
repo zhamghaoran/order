@@ -4,6 +4,7 @@ package com.order.Service;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
+import com.order.util.Response;
 
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface UserService {
 
     User Login(String username, String password);
 
-    String Register(String username, String password);
+    Response Register(String UID);
 
     Orders AddOrder(User user, Goods goods,User business) ;
 

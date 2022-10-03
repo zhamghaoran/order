@@ -85,10 +85,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
     }
 
     @Override
-    public Boolean arrive(Long id) throws Exception {
+    public Boolean arrive(Long id) {
         Orders order = orderMapper.selectById(id);
         if (order.getArriveOrNot()) {
-            throw new Exception("这个订单已经完成");
+            return true;
         }
         order.setArriveOrNot(true);
         int cnt = orderMapper.updateById(order);
