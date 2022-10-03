@@ -43,13 +43,13 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     public Goods findGoodsById(Integer goodsId) {
-        return businessMapper.findGoodsById(goodsId);
+        return goodsService.queryById(Long.valueOf(goodsId));
 
     }
 
     @Override
     public void deleteGoods(Integer goodsId) {
-        businessMapper.deleteGoodById(goodsId);
+        goodsService.delete(String.valueOf(goodsId));
     }
 
     @Override

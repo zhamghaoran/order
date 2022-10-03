@@ -1,16 +1,15 @@
 package com.order.Service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.order.Dao.pojo.Orders;
 
 
-import java.util.List;
-
 public interface OrderService extends IService<Orders> {
 
-    List<Orders> userQuery(Long id);
+    Page<Orders> userQuery(Long id, int index, int size);
 
-    List<Orders> BusinessQuery(Long id);
+    Page<Orders> BusinessQuery(Long id,int index,int size);
 
     Boolean arrive(Long id) throws Exception;
 

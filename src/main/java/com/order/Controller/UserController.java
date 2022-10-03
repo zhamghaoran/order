@@ -1,17 +1,19 @@
 package com.order.Controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
-import com.order.Service.BusinessService;
-import com.order.Service.OrderService;
-import com.order.Service.RootService;
-import com.order.Service.UserService;
+import com.order.Service.*;
 import com.order.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +59,7 @@ public class UserController {
             return new Response().badReturn("UID 错误");
         return businessService.addGoods(UID,goods);
     }
-    @RequestMapping("/delete/goods")
+    @RequestMapping("/delete/good")
     public Response deleteGoods(Integer goodsId) {
         if (businessService.findGoodsById(goodsId) == null) {
             return new Response().badReturn("商品ID错误");
@@ -72,75 +74,130 @@ public class UserController {
 
     //新增一个订单
     @RequestMapping("/add/record")
-    public Boolean addRecord(Orders orders){
-        if(orderService.save(orders)){
-            return true;
-        }
-        return false;
+    public Response addRecord(Orders orders){
+        return new Response().easyReturn(orderService.save(orders));
     }
 
     //删除一个订单
     @RequestMapping("/delete/record")
-    public Boolean deleteRecord(Long id){
-        if(orderService.removeById(id)){
-            return true;
-        }
-        return false;
+    public Response deleteRecord(Long id){
+        return new Response().easyReturn(orderService.removeById(id));
     }
 
     //根据用户的id查询所有的订单
     @RequestMapping("/query/user/records")
-    public List<Orders> UserQueryRecords(Long id){
-        List<Orders> list = null;
-        list = orderService.userQuery(id);
-        return list;
+    public Response UserQueryRecords(Long id,int index,int size){
+        Page<Orders> list = null;
+        list = orderService.userQuery(id,index,size);
+        if(list == null) return new Response().badReturn("查找失败");
+        return new Response().easyReturn(list.getRecords());
     }
 
     //根据商家的id查询所有订单
     @RequestMapping("/query/business/records")
-    public List<Orders> BusinessQueryRecords(Long id){
-        List<Orders> list = null;
-        list = orderService.BusinessQuery(id);
-        return list;
+    public Response BusinessQueryRecords(Long id,int index,int size){
+        Page<Orders> list = null;
+        list = orderService.BusinessQuery(id,index,size);
+        if(list == null) return new Response().badReturn("查找失败");
+        return new Response().easyReturn(list.getRecords());
     }
 
     //根据id查询单个订单
     @RequestMapping("/query/record")
-    public Orders QueryById(Long id){
-        Orders orders = new Orders();
+    public Response QueryById(Long id){
+        Orders orders;
         orders = orderService.selectById(id);
-        return orders;
+        if(orders == null)return new Response().badReturn("查找失败");
+        return new Response().easyReturn(orders);
     }
 
     //用户点击完成订单
     @RequestMapping("/finish/record")
-    public Boolean finishRecord(Long id){
+    public Response finishRecord(Long id){
         try {
             if(orderService.arrive(id)){
-                return true;
+                return new Response().easyReturn(true);
+            }else {
+                return new Response().badReturn("出错啦");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return new Response().badReturn("出错啦");
         }
-        return false;
     }
 
     //批量完成
     @RequestMapping("/finish/records")
-    public Boolean finishRecords(String ids){
-        if(!orderService.arriveMore(ids))return false;
-        return true;
+    public Response finishRecords(String ids){
+        if(!orderService.arriveMore(ids))return new Response().badReturn("出错啦");
+        return new Response().easyReturn(true);
     }
     //批量添加
     @RequestMapping("/add/records")
-    public Boolean addRecords(Long sellId,String goodsIds,Long buyId){
-        if(!orderService.addMore(sellId,goodsIds,buyId))return false;
-        return true;
+    public Response addRecords(Long sellId,String goodsIds,Long buyId){
+        if(!orderService.addMore(sellId,goodsIds,buyId))return new Response().badReturn("出错啦");
+        return new Response().easyReturn(true);
     }
     //批量删除
     @RequestMapping("/delete/records")
-    public Boolean deleteRecords(String ids){
-        if(!orderService.deleteMore(ids))return false;
-        return true;
+    public Response deleteRecords(String ids){
+        if(!orderService.deleteMore(ids))return new Response().badReturn("出错啦");
+        return new Response().easyReturn(true);
+    }
+
+    @Autowired
+    GoodsService goodsService;
+
+    //添加商品
+    @RequestMapping("/add/goods")
+    public Response addsGoods(Goods goods, MultipartFile file){
+        if(!file.isEmpty()) {
+            try {
+                Base64.Encoder encoder = Base64.getEncoder();
+                String ImgStr = encoder.encodeToString(file.getBytes());
+                goods.setPicture(ImgStr);
+                goodsService.save(goods);
+                return new Response().easyReturn(true);
+            } catch (IOException e) {
+                return new Response().badReturn("出错啦");
+            }
+        }else {
+            return new Response().badReturn("出错啦");
+        }
+    }
+    //批量删除商品
+    @RequestMapping("/delete/goods")
+    public Response deleteGoods(String ids){
+        if(goodsService.delete(ids))return new Response().easyReturn(true);
+        return new Response().badReturn("出错啦");
+    }
+    //查询所有商品信息
+    @RequestMapping("query/goods")
+    public Response queryGoods(int index,int size){
+        Page<Goods> list = null;
+        list = goodsService.queryGoods(index,size);
+        if(list == null)return new Response().badReturn("出错啦");
+        return new Response().easyReturn(list.getRecords());
+    }
+    //修改商品信息
+    @RequestMapping("/modify/goods")
+    public Response modifyGoods(Goods goods,MultipartFile file){
+        try {
+            if (file!=null && !file.isEmpty()){
+                Base64.Encoder encoder = Base64.getEncoder();
+                String ImgStr = encoder.encodeToString(file.getBytes());
+                goods.setPicture(ImgStr);
+            }
+            if(goodsService.modify(goods)) return new Response().easyReturn(true);
+            else return new Response().badReturn("出错啦");
+        } catch (IOException e) {
+            return new Response().badReturn("出错啦");
+        }
+    }
+    //根据Id查询单个商品
+    @RequestMapping("/query/agoods")
+    public Response getGoodsById(HttpServletResponse response, Long id){
+        Goods goods = goodsService.queryById(id);
+        if (goods == null)return new Response().badReturn("出错啦");
+        return new Response().easyReturn(goods);
     }
 }
