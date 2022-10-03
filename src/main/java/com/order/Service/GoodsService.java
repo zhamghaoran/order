@@ -11,7 +11,7 @@ public interface GoodsService extends IService<Goods> {
 
     boolean delete(String ids);
 
-    Page<Goods> queryGoods(int index, int size);
+    Page<Goods> queryGoods(Long id,int index, int size);
 
     boolean modify(Goods goods);
 }

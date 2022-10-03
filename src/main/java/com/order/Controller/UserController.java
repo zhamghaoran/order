@@ -64,13 +64,12 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/add/good",method = RequestMethod.POST)
-    public Response addGoods(String UID, Goods goods) {
+    public Response addGoods(String UID, Goods goods,MultipartFile file) {
         User user = userService.FindUserByUID(UID);
         if (user.getRole() != 1)
             return new Response().badReturn("权限不足");
         return businessService.addGoods(UID, goods);
     }
-
     /**
      * 删除商品
      *
@@ -83,6 +82,62 @@ public class UserController {
             return new Response().badReturn("商品ID错误");
         }
         return businessService.deleteGoods(goodsId);
+    }
+    @Autowired
+    GoodsService goodsService;
+
+    //添加商品
+    @RequestMapping("/add/goods")
+    public Response addsGoods(Goods goods, MultipartFile file){
+        if(!file.isEmpty()) {
+            try {
+                Base64.Encoder encoder = Base64.getEncoder();
+                String ImgStr = encoder.encodeToString(file.getBytes());
+                goods.setPicture(ImgStr);
+                goodsService.save(goods);
+                return new Response().easyReturn("success");
+            } catch (IOException e) {
+                return new Response().badReturn("failed");
+            }
+        }else {
+            return new Response().badReturn("failed");
+        }
+    }
+    //批量删除商品
+    @RequestMapping("/delete/goods")
+    public Response deleteGoods(String ids){
+        if(goodsService.delete(ids))return new Response().easyReturn("success");
+        return new Response().badReturn("failed");
+    }
+    //查询所有商品信息
+    @RequestMapping("query/goods")
+    public Response queryGoods(Long id,int index,int size){
+        Page<Goods> list = null;
+        list = goodsService.queryGoods(id,index,size);
+        if(list == null)return new Response().badReturn("failed");
+        return new Response().easyReturn(list.getRecords());
+    }
+    //修改商品信息
+    @RequestMapping("/modify/goods")
+    public Response modifyGoods(Goods goods,MultipartFile file){
+        try {
+            if (file!=null && !file.isEmpty()){
+                Base64.Encoder encoder = Base64.getEncoder();
+                String ImgStr = encoder.encodeToString(file.getBytes());
+                goods.setPicture(ImgStr);
+            }
+            if(goodsService.modify(goods)) return new Response().easyReturn("success");
+            else return new Response().badReturn("failed");
+        } catch (IOException e) {
+            return new Response().badReturn("failed");
+        }
+    }
+    //根据Id查询单个商品
+    @RequestMapping("/query/agoods")
+    public Response getGoodsById( Long id){
+        Goods goods = goodsService.queryById(id);
+        if (goods == null)return new Response().badReturn("failed");
+        return new Response().easyReturn(goods);
     }
 
     //新增一个订单
@@ -168,63 +223,6 @@ public class UserController {
     @RequestMapping("/delete/Business")
     public Response DeleteBusiness(Integer BusinessID) {
         return new Response().easyReturn(rootService.DeleteBusiness(BusinessID));
-    }
-
-    @Autowired
-    GoodsService goodsService;
-
-    //添加商品
-    @RequestMapping("/add/goods")
-    public Response addsGoods(Goods goods, MultipartFile file){
-        if(!file.isEmpty()) {
-            try {
-                Base64.Encoder encoder = Base64.getEncoder();
-                String ImgStr = encoder.encodeToString(file.getBytes());
-                goods.setPicture(ImgStr);
-                goodsService.save(goods);
-                return new Response().easyReturn("success");
-            } catch (IOException e) {
-                return new Response().badReturn("failed");
-            }
-        }else {
-            return new Response().badReturn("failed");
-        }
-    }
-    //批量删除商品
-    @RequestMapping("/delete/goods")
-    public Response deleteGoods(String ids){
-        if(goodsService.delete(ids))return new Response().easyReturn("success");
-        return new Response().badReturn("failed");
-    }
-    //查询所有商品信息
-    @RequestMapping("query/goods")
-    public Response queryGoods(int index,int size){
-        Page<Goods> list = null;
-        list = goodsService.queryGoods(index,size);
-        if(list == null)return new Response().badReturn("failed");
-        return new Response().easyReturn(list.getRecords());
-    }
-    //修改商品信息
-    @RequestMapping("/modify/goods")
-    public Response modifyGoods(Goods goods,MultipartFile file){
-        try {
-            if (file!=null && !file.isEmpty()){
-                Base64.Encoder encoder = Base64.getEncoder();
-                String ImgStr = encoder.encodeToString(file.getBytes());
-                goods.setPicture(ImgStr);
-            }
-            if(goodsService.modify(goods)) return new Response().easyReturn("success");
-            else return new Response().badReturn("failed");
-        } catch (IOException e) {
-            return new Response().badReturn("failed");
-        }
-    }
-    //根据Id查询单个商品
-    @RequestMapping("/query/agoods")
-    public Response getGoodsById(HttpServletResponse response, Long id){
-        Goods goods = goodsService.queryById(id);
-        if (goods == null)return new Response().badReturn("failed");
-        return new Response().easyReturn(goods);
     }
 
 }

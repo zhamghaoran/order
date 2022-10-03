@@ -25,7 +25,7 @@ class OrderApplicationTests {
     OrderService orderService;
     @Test
     void testPage(){
-        Page<Goods> goodsPage = goodsService.queryGoods(1, 2);
+        Page<Goods> goodsPage = goodsService.queryGoods(1L,1, 2);
         List<Goods> records = goodsPage.getRecords();
         System.out.println(records);
     }

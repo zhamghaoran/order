@@ -64,9 +64,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @return
      */
     @Override
-    public Page<Goods> queryGoods(int index, int size) {
+    public Page<Goods> queryGoods(Long id,int index, int size) {
         Page<Goods> goodsPage = new Page<>(index,size);
-        goodsPage = this.page(goodsPage,null);
+        goodsPage = this.page(goodsPage,new QueryWrapper<Goods>().eq("belong", id));
         return goodsPage;
     }
 
