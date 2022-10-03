@@ -25,7 +25,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     public boolean modify(Goods goods) {
-        UpdateWrapper updateWrapper = new UpdateWrapper();
+        UpdateWrapper<Goods> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id",goods.getId());
         int cnt = goodsMapper.update(goods, updateWrapper);
         if (cnt>0)return true;
@@ -40,11 +40,10 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     public boolean delete(String idStr) {
         String[] ids = idStr.split(",");
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.in("id",ids);
+        QueryWrapper<Goods> wrapper = new QueryWrapper<>();
+        wrapper.in("id", (Object) ids);
         int cnt = goodsMapper.delete(wrapper);
-        if (cnt>0)return true;
-        return false;
+        return cnt > 0;
     }
 
     /**
@@ -77,10 +76,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     public Goods queryById(Long id) {
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Goods> wrapper = new QueryWrapper<>();
         wrapper.eq("id",id);
-        Goods goods = goodsMapper.selectOne(wrapper);
-        return goods;
+        return goodsMapper.selectOne(wrapper);
     }
 
 }

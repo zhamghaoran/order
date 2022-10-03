@@ -20,5 +20,4 @@ public interface BusinessService {
 
 
 
-    List<User> getAllBusiness();
 }

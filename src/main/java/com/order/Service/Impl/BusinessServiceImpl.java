@@ -2,6 +2,8 @@ package com.order.Service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
@@ -19,7 +21,7 @@ import java.lang.annotation.ElementType;
 import java.util.List;
 
 @Service
-public class BusinessServiceImpl implements BusinessService {
+public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Goods> implements BusinessService {
     @Autowired
     private BusinessMapper businessMapper;
     @Autowired
@@ -31,7 +33,8 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     public Response addGoods(String UID, Goods goods) {
-        goods.setBelong(Long.valueOf(UID));
+        goods.setBelong(UID);
+        goods.setId(0);
         int insert = goodsMapper.insert(goods);
         if (insert >= 0)
             return new Response().easyReturn(insert);
@@ -55,10 +58,5 @@ public class BusinessServiceImpl implements BusinessService {
             return new Response().badReturn("删除失败");
     }
 
-    @Override
-    public List<User> getAllBusiness() {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getRole, 1);
-        return userMapper.selectList(queryWrapper);
-    }
+
 }

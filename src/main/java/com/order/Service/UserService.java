@@ -1,6 +1,7 @@
 package com.order.Service;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
@@ -25,4 +26,6 @@ public interface UserService {
     void finishOrder(User user, Integer OrderId);
 
     List<Orders> QueryAllOrders();
+
+    Page<User> getAllBusiness(int index, int size);
 }

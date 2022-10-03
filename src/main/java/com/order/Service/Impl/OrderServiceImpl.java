@@ -4,9 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.order.Dao.pojo.Orders;
+import com.order.Dao.pojo.User;
 import com.order.Service.OrderService;
+import com.order.mapper.GoodsMapper;
 import com.order.mapper.OrderMapper;
+import com.order.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +23,11 @@ import java.util.List;
 @Transactional
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implements OrderService {
     @Autowired
-    OrderMapper orderMapper;
+    private OrderMapper orderMapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private GoodsMapper goodsMapper;
 
     @Override
     public boolean save(Orders entity) {
@@ -57,6 +65,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean deleteRecord(Integer buyId) {
+        int i = orderMapper.deleteById(buyId);
+        return i > 0;
+    }
+
+    @Override
+    public boolean checkParams(Orders orders) {
+        Long sellId = orders.getSellId();
+        Long buyId = orders.getBuyId();
+        return userMapper.selectById(sellId) != null && goodsMapper.selectById(buyId) != null;
+
+
     }
 
     public Page<Orders> userQuery(Long id, int index, int size) {
