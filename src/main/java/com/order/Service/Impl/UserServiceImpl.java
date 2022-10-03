@@ -46,7 +46,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
             return new Response().badReturn(map);
         }
     }
-
     @Override
     public Orders AddOrder(User user, Goods goods, User business) {
         return null;
@@ -78,5 +77,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
 //        goodsPage = this.page(goodsPage,new QueryWrapper<Goods>().eq("belong", id));
         Page<User> UserPage = new Page<>(index,size);
         return this.page(UserPage,new QueryWrapper<User>().eq("role",1));
+    }
+
+    @Override
+    public Response insertUser(User user) {
+        int insert = userMapper.insert(user);
+        if (insert > 0)
+            return new Response().easyReturn("success");
+        else return new Response().badReturn("failed");
     }
 }

@@ -28,4 +28,6 @@ public interface UserService {
     List<Orders> QueryAllOrders();
 
     Page<User> getAllBusiness(int index, int size);
+
+    Response insertUser(User user);
 }

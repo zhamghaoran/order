@@ -3,6 +3,7 @@ package com.order.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.order.Dao.pojo.Goods;
+import com.order.util.Response;
 
 public interface GoodsService extends IService<Goods> {
     boolean save(Goods goods);
@@ -13,5 +14,5 @@ public interface GoodsService extends IService<Goods> {
 
     Page<Goods> queryGoods(Long id,int index, int size);
 
-    boolean modify(Goods goods);
+    Response modify(Goods goods);
 }

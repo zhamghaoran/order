@@ -124,21 +124,11 @@ public class UserController {
         return new Response().easyReturn(list.getRecords());
     }
 
-//    //修改商品信息
-//    @RequestMapping("/modify/goods")
-//    public Response modifyGoods(Goods goods, MultipartFile file) {
-//        try {
-//            if (file != null && !file.isEmpty()) {
-//                Base64.Encoder encoder = Base64.getEncoder();
-//                String ImgStr = encoder.encodeToString(file.getBytes());
-//                goods.setPicture(ImgStr);
-//            }
-//            if (goodsService.modify(goods)) return new Response().easyReturn("success");
-//            else return new Response().badReturn("failed");
-//        } catch (IOException e) {
-//            return new Response().badReturn("failed");
-//        }
-//    }
+    //修改商品信息
+    @RequestMapping("/modify/goods")
+    public Response modifyGoods(Goods goods) {
+        return goodsService.modify(goods);
+    }
 
     //根据Id查询单个商品
     @RequestMapping("/query/agoods")
@@ -233,6 +223,11 @@ public class UserController {
     @RequestMapping("/delete/Business")
     public Response DeleteBusiness(Integer BusinessID) {
         return new Response().easyReturn(rootService.DeleteBusiness(BusinessID));
+    }
+    @RequestMapping("/add/businessman")
+    public Response addBusiness(User user) {
+         user.setRole(1);
+         return userService.insertUser(user);
     }
 
 }

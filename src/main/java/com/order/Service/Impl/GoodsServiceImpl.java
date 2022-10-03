@@ -3,11 +3,13 @@ package com.order.Service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.order.Dao.pojo.Goods;
 import com.order.Service.GoodsService;
 import com.order.mapper.GoodsMapper;
+import com.order.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +26,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @return
      */
     @Override
-    public boolean modify(Goods goods) {
+    public Response modify(Goods goods) {
         UpdateWrapper<Goods> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id",goods.getId());
         int cnt = goodsMapper.update(goods, updateWrapper);
-        if (cnt>0)return true;
-        return false;
+        if (cnt > 0)
+            return new Response().easyReturn("success");
+        else return new Response().badReturn("商品信息错误");
+
     }
 
     /**

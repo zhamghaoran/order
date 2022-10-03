@@ -1,8 +1,10 @@
 package com.order.Service.Impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
 import com.order.Service.OrderService;
@@ -75,11 +77,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     @Override
     public boolean checkParams(Orders orders) {
-        Long sellId = orders.getSellId();
-        Long buyId = orders.getBuyId();
-        return userMapper.selectById(sellId) != null && goodsMapper.selectById(buyId) != null;
-
-
+        Integer sellId = Math.toIntExact(orders.getSellId());
+        Integer buyId = Math.toIntExact(orders.getBuyId());
+        User user = userMapper.selectById(buyId);
+        Goods goods = goodsMapper.selectById(sellId);
+        return user != null && goods != null;
     }
 
     public Page<Orders> userQuery(Long id, int index, int size) {
@@ -100,6 +102,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
     @Override
     public Boolean arrive(Long id) {
         Orders order = orderMapper.selectById(id);
+        if (order == null) {
+            return false;
+        }
         if (order.getArriveOrNot()) {
             return true;
         }
@@ -113,7 +118,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         String[] ids = idStr.split(",");
         for (int i = 0; i < ids.length; i++) {
             //log.info(ids[i]);
-            arrive(Long.parseLong(ids[i]));
+            if (!arrive(Long.parseLong(ids[i])))
+                return false;
         }
         return true;
     }
