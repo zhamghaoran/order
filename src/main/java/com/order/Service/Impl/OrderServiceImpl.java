@@ -1,6 +1,7 @@
 package com.order.Service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.order.Dao.pojo.Orders;
 import com.order.Service.OrderService;
@@ -58,20 +59,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         return true;
     }
 
-    public List<Orders> userQuery(Long id) {
+    public Page<Orders> userQuery(Long id, int index, int size) {
+        Page<Orders> ordersPage = new Page<>(index,size);
         QueryWrapper<Orders> wrapper = new QueryWrapper<Orders>();
-        wrapper.eq("buyId", id);
-        List<Orders> list = null;
-        list = orderMapper.selectList(wrapper);
-        return list;
+        wrapper.eq("buyId",id);
+        ordersPage = this.page(ordersPage,wrapper);
+        return ordersPage;
     }
 
-    public List<Orders> BusinessQuery(Long id) {
+    public Page<Orders> BusinessQuery(Long id,int index,int size) {
+        Page<Orders> ordersPage = new Page<>(index,size);
         QueryWrapper<Orders> wrapper = new QueryWrapper<>();
-        wrapper.eq("sellId", id);
-        List<Orders> list = null;
-        list = orderMapper.selectList(wrapper);
-        return list;
+        wrapper.eq("sellId",id);
+        return this.page(ordersPage,wrapper);
     }
 
     @Override

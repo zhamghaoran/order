@@ -31,7 +31,7 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     public Response addGoods(String UID, Goods goods) {
-        goods.setBelong(UID);
+        goods.setBelong(Long.valueOf(UID));
         int insert = goodsMapper.insert(goods);
         if (insert >= 0)
             return new Response().easyReturn(insert);
