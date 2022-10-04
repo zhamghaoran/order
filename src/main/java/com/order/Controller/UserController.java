@@ -90,23 +90,6 @@ public class UserController {
     }
 
 
-    //添加商品
-//    @RequestMapping("/add/goods")
-//    public Response addsGoods(Goods goods, MultipartFile file){
-//        if(!file.isEmpty()) {
-//            try {
-//                Base64.Encoder encoder = Base64.getEncoder();
-//                String ImgStr = encoder.encodeToString(file.getBytes());
-//                goods.setPicture(ImgStr);
-//                goodsService.save(goods);
-//                return new Response().easyReturn("success");
-//            } catch (IOException e) {
-//                return new Response().badReturn("failed");
-//            }
-//        }else {
-//            return new Response().badReturn("failed");
-//        }
-//    }
     //批量删除商品
     @RequestMapping("/delete/goods")
     public Response deleteGoods(String ids) {
@@ -201,8 +184,8 @@ public class UserController {
 
     //批量添加
     @RequestMapping("/add/records")
-    public Response addRecords(Long sellId, String goodsIds, Long buyId) {
-        if (!orderService.addMore(sellId, goodsIds, buyId))
+    public Response addRecords(Orders entity) {
+        if (!orderService.addMore(entity))
             return new Response().badReturn("failed");
         return new Response().easyReturn("success");
     }

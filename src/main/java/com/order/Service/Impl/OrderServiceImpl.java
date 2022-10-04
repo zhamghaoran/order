@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -44,18 +45,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
     }
 
     @Override
-    public boolean addMore(Long sellId, String goodsIdStr, Long buyId) {
-        String[] goodsId = goodsIdStr.split(",");
-        for (int i = 0; i < goodsId.length; i++) {
-            Orders orders = new Orders();
-            orders.setBuyId(buyId);
-            orders.setSellId(sellId);
-            orders.setGoodsId(Long.parseLong(goodsId[i]));
-            if (!save(orders)) {
-                return false;
-            }
-        }
-        return true;
+    public boolean addMore(Orders orders) {
+//        String[] goodsId = goodsIdStr.split(",");
+//        for (int i = 0; i < goodsId.length; i++) {
+//            Orders orders = new Orders();
+//            orders.setBuyId(buyId);
+//            orders.setSellId(sellId);
+//            orders.setGoodsId(Long.parseLong(goodsId[i]));
+//            if (!save(orders)) {
+//                return false;
+//            }
+//        }
+//        return true;
+        orders.setTime(new Date(System.currentTimeMillis()));
+        orders.setArriveOrNot(false);
+        orders.setId(null);
+        return orderMapper.insert(orders) > 0;
     }
 
     @Override
@@ -128,6 +133,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
     public Orders selectById(Long id) {
         Orders orders = null;
         orders = orderMapper.selectById(id);
+        String goodsIds = orders.getGoodsIds();
+        orders.setGoodsList(Arrays.asList(goodsIds.split(",")));
         return orders;
     }
 }

@@ -19,7 +19,7 @@ public interface OrderService extends IService<Orders> {
 
     Boolean arriveMore(String ids);
 
-    boolean addMore(Long sellId, String goodsIds, Long buyId);
+    boolean addMore(Orders entity);
 
     boolean deleteMore(String ids);
 

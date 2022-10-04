@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -16,8 +17,8 @@ import java.sql.Date;
 public class Orders {
     @TableField("buyId")
     private Long buyId;
-    @TableField("goodsId")
-    private Long goodsId;
+    @TableField("goodsIds")
+    private String goodsIds;
     @TableField("sellId")
     private Long sellId;
     @TableField("time")
@@ -28,4 +29,7 @@ public class Orders {
     private Long id;
     @TableField("destination")
     private String destination;
+
+    @TableField(exist = false)
+    List<String> goodsList;
 }
