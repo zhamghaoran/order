@@ -1,18 +1,18 @@
 package com.order.Service.Impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.order.Dao.pojo.Address;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
 import com.order.Service.UserService;
+import com.order.mapper.AddressMapper;
 import com.order.mapper.UserMapper;
 import com.order.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -23,6 +23,8 @@ import java.util.Map;
 public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private AddressMapper addressMapper;
 
     @Override
     public User FindUserByUID(String uid) {
@@ -85,5 +87,39 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         if (insert > 0)
             return new Response().easyReturn("success");
         else return new Response().badReturn("failed");
+    }
+
+    @Override
+    public Response selectAddress(String name) {
+        QueryWrapper<Address> addressQueryWrapper = new QueryWrapper<>();
+        addressQueryWrapper.eq("name",name);
+        List<Address> addresses = addressMapper.selectList(addressQueryWrapper);
+        if (addresses == null) {
+            return new Response().badReturn("姓名错误");
+        }
+        return new Response().easyReturn(addresses);
+
+    }
+
+    @Override
+    public Response addAddress(Address address) {
+        int insert = addressMapper.insert(address);
+        if (insert > 0)
+            return new Response().easyReturn("success");
+        else return new Response().badReturn("failed");
+    }
+
+    @Override
+    public Response deleteAdderss(Address address) {
+        QueryWrapper<Address> addressQueryWrapper = new QueryWrapper<>();
+        addressQueryWrapper.eq("name",address.getName());
+        addressQueryWrapper.eq("phone",address.getPhone());
+        addressQueryWrapper.eq("address",address.getAddress());
+        addressQueryWrapper.eq("completed_address",address.getCompletedAddress());
+        int delete = addressMapper.delete(addressQueryWrapper);
+        if (delete > 0)
+            return new Response().easyReturn("success");
+        else
+            return new Response().badReturn("failed");
     }
 }

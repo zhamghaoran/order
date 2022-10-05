@@ -2,6 +2,7 @@ package com.order.Service;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.order.Dao.pojo.Address;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
@@ -30,4 +31,10 @@ public interface UserService {
     Page<User> getAllBusiness(int index, int size);
 
     Response insertUser(User user);
+
+    Response selectAddress(String name);
+
+    Response addAddress(Address address);
+
+    Response deleteAdderss(Address address);
 }

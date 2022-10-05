@@ -1,43 +1,36 @@
 package com.order.Controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.order.Dao.pojo.Address;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
 import com.order.Service.*;
 import com.order.util.HttpRequest;
 import com.order.util.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 public class UserController {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private RootService rootService;
-    @Autowired
-    private BusinessService businessService;
-    @Autowired
-    private OrderService orderService;
-    @Autowired
+    private final UserService userService;
+    private final RootService rootService;
+    private final BusinessService businessService;
+    private final OrderService orderService;
+    final
     GoodsService goodsService;
+    public UserController(UserService userService, RootService rootService, BusinessService businessService, OrderService orderService, GoodsService goodsService) {
+        this.userService = userService;
+        this.rootService = rootService;
+        this.businessService = businessService;
+        this.orderService = orderService;
+        this.goodsService = goodsService;
+    }
 
 
     @RequestMapping("/wechat")
@@ -51,16 +44,26 @@ public class UserController {
     /**
      * 待定，需要修改
      *
-     * @param UID
-     * @return
      */
     @RequestMapping("/login")
-    public Response GetUserRole(String UID) {
+    public Response GetUserRole(String code) {
+        String params = "grant_type=" + "authorization_code" + "&secret=" + "40cbf33b1ceaa4ce697af92929e9a96f" + "&appid="+ "wx51d09fce06765763" + "&js_code=" + code;
+        String sendGet = new HttpRequest().sendGet("https://api.weixin.qq.com/sns/jscode2session?", params);
+        JSONObject json = JSONObject.parseObject(sendGet);
+        String errcode = json.getString("errcode");
+        if (errcode != null) {
+            Map<String,String> map = new HashMap<>();
+            map.put("errcode", errcode);
+            map.put("errmsg",json.getString("errmsg"));
+            return new Response().badReturn(map);
+        }
+        String UID = json.getString("openid");
         User user = userService.FindUserByUID(UID);
         if (user == null) {
             return userService.Register(UID);
         }
         Map<String, String> map = new HashMap<>();
+        map.put("openid",UID);
         if (user.getRole() == 1) {
             map.put("role", "1");
             return new Response().easyReturn(map);
@@ -77,9 +80,6 @@ public class UserController {
     /**
      * 添加商品
      *
-     * @param UID
-     * @param goods
-     * @return
      */
     @RequestMapping(value = "/add/good", method = RequestMethod.POST)
     public Response addGoods(String UID, Goods goods) {
@@ -95,8 +95,6 @@ public class UserController {
     /**
      * 删除商品
      *
-     * @param goodsId
-     * @return
      */
     @RequestMapping(value = "/delete/good",method = RequestMethod.POST)
     public Response deleteGoods(Integer goodsId) {
@@ -135,7 +133,7 @@ public class UserController {
     //查询所有商品信息
     @RequestMapping("query/goods")
     public Response queryGoods(Long id, int index, int size) {
-        Page<Goods> list = null;
+        Page<Goods> list;
         list = goodsService.queryGoods(id, index, size);
         if (list == null) return new Response().badReturn("failed");
         return new Response().easyReturn(list.getRecords());
@@ -167,18 +165,11 @@ public class UserController {
     }
 
     //删除一个订单
-//    @RequestMapping("/delete/record")
-//    public Response deleteRecord(Integer buyId) {
-//        if (orderService.deleteRecord(buyId)) {
-//            return new Response().easyReturn("success");
-//        }
-//        return new Response().badReturn("failed");
-//    }
 
     //根据用户的id查询所有的订单
     @RequestMapping("/query/user/records")
     public Response UserQueryRecords(Long id, int index, int size) {
-        Page<Orders> list = null;
+        Page<Orders> list;
         list = orderService.userQuery(id, index, size);
         return new Response().easyReturn(list.getRecords());
     }
@@ -186,7 +177,7 @@ public class UserController {
     //根据商家的id查询所有订单
     @RequestMapping("/query/business/records")
     public Response BusinessQueryRecords(Long id, int index, int size) {
-        Page<Orders> list = null;
+        Page<Orders> list;
         list = orderService.BusinessQuery(id, index, size);
         return new Response().easyReturn(list.getRecords());
     }
@@ -194,7 +185,7 @@ public class UserController {
     //根据id查询单个订单
     @RequestMapping("/query/record")
     public Response QueryById(Long id) {
-        Orders orders = new Orders();
+        Orders orders;
         orders = orderService.selectById(id);
         return new Response().easyReturn(orders);
     }
@@ -245,6 +236,18 @@ public class UserController {
     public Response addBusiness(User user) {
          user.setRole(1);
          return userService.insertUser(user);
+    }
+    @RequestMapping("/get/address")
+    public Response getAddress(String name) {
+        return userService.selectAddress(name);
+    }
+    @RequestMapping(value = "/add/address",method = RequestMethod.POST)
+    public Response addAddress(Address address) {
+        return userService.addAddress(address);
+    }
+    @RequestMapping(value = "/delete/address",method = RequestMethod.POST)
+    public Response deleteAddress(Address address) {
+        return userService.deleteAdderss(address);
     }
 
 }
