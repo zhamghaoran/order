@@ -1,22 +1,30 @@
 package com.order.Controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.order.Dao.pojo.Goods;
 import com.order.Dao.pojo.Orders;
 import com.order.Dao.pojo.User;
 import com.order.Service.*;
+import com.order.util.HttpRequest;
 import com.order.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 public class UserController {
@@ -31,6 +39,15 @@ public class UserController {
     @Autowired
     GoodsService goodsService;
 
+
+    @RequestMapping("/wechat")
+    public Response loginWechat(String code) {
+        String params = "grant_type=" + "authorization_code" + "&secret=" + "40cbf33b1ceaa4ce697af92929e9a96f" + "&appid="+ "wx51d09fce06765763" + "&js_code=" + code;
+        String sendGet = new HttpRequest().sendGet("https://api.weixin.qq.com/sns/jscode2session?", params);
+        JSONObject json = JSONObject.parseObject(sendGet);
+        return new Response().easyReturn(json);
+
+    }
     /**
      * 待定，需要修改
      *
