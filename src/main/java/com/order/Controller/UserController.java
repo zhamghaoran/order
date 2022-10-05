@@ -51,7 +51,7 @@ public class UserController {
             map.put("role", "2");
             return new Response().easyReturn(map);
         } else if (user.getRole() == 0) {
-            map.put("role", "3");
+            map.put("role", "0");
             return new Response().easyReturn(map);
         }
         return null;
@@ -90,6 +90,23 @@ public class UserController {
     }
 
 
+    //添加商品
+//    @RequestMapping("/add/goods")
+//    public Response addsGoods(Goods, MultipartFile file){
+//        if(!file.isEmpty()) {
+//            try {
+//                Base64.Encoder encoder = Base64.getEncoder();
+//                String ImgStr = encoder.encodeToString(file.getBytes());
+//                goods.setPicture(ImgStr);
+//                goodsService.save(goods);
+//                return new Response().easyReturn("success");
+//            } catch (IOException e) {
+//                return new Response().badReturn("failed");
+//            }
+//        }else {
+//            return new Response().badReturn("failed");
+//        }
+//    }
     //批量删除商品
     @RequestMapping("/delete/goods")
     public Response deleteGoods(String ids) {

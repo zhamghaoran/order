@@ -82,11 +82,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     @Override
     public boolean checkParams(Orders orders) {
-        Integer sellId = Math.toIntExact(orders.getSellId());
         Integer buyId = Math.toIntExact(orders.getBuyId());
+        String goodsIds = orders.getGoodsIds();
+        String[] split = goodsIds.split(",");
         User user = userMapper.selectById(buyId);
-        Goods goods = goodsMapper.selectById(sellId);
-        return user != null && goods != null;
+        for(String i : split)
+        {
+            if (goodsMapper.selectById(i) == null) {
+                return false;
+            }
+        }
+        return user != null;
     }
 
     public Page<Orders> userQuery(Long id, int index, int size) {
