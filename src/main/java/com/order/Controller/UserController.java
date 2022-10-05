@@ -81,7 +81,7 @@ public class UserController {
      * @param goodsId
      * @return
      */
-    @RequestMapping("/delete/good")
+    @RequestMapping(value = "/delete/good",method = RequestMethod.POST)
     public Response deleteGoods(Integer goodsId) {
         if (businessService.findGoodsById(goodsId) == null) {
             return new Response().badReturn("商品ID错误");
@@ -108,7 +108,7 @@ public class UserController {
 //        }
 //    }
     //批量删除商品
-    @RequestMapping("/delete/goods")
+    @RequestMapping(value = "/delete/goods",method = RequestMethod.POST)
     public Response deleteGoods(String ids) {
         if (goodsService.delete(ids))
             return new Response().easyReturn("success");
@@ -150,13 +150,13 @@ public class UserController {
     }
 
     //删除一个订单
-    @RequestMapping("/delete/record")
-    public Response deleteRecord(Integer buyId) {
-        if (orderService.deleteRecord(buyId)) {
-            return new Response().easyReturn("success");
-        }
-        return new Response().badReturn("failed");
-    }
+//    @RequestMapping("/delete/record")
+//    public Response deleteRecord(Integer buyId) {
+//        if (orderService.deleteRecord(buyId)) {
+//            return new Response().easyReturn("success");
+//        }
+//        return new Response().badReturn("failed");
+//    }
 
     //根据用户的id查询所有的订单
     @RequestMapping("/query/user/records")
@@ -208,7 +208,7 @@ public class UserController {
     }
 
     //批量删除
-    @RequestMapping("/delete/records")
+    @RequestMapping(value = "/delete/records",method = RequestMethod.POST)
     public Response deleteRecords(String ids) {
         if (!orderService.deleteMore(ids))
             return new Response().badReturn("failed");
