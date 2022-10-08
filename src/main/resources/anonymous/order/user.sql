@@ -1,7 +1,7 @@
-create table `order`.user
+create table user
 (
-    id   int not null
+    id   varchar(100) not null
         primary key,
-    role int not null
+    role int          not null
 );
 

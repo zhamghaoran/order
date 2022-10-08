@@ -90,15 +90,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     }
 
     @Override
-    public Response selectAddress(String name) {
-        QueryWrapper<Address> addressQueryWrapper = new QueryWrapper<>();
-        addressQueryWrapper.eq("name",name);
-        List<Address> addresses = addressMapper.selectList(addressQueryWrapper);
+    public Response selectAddress() {
+        List<Address> addresses = addressMapper.selectAll();
         if (addresses == null) {
-            return new Response().badReturn("姓名错误");
-        }
-        return new Response().easyReturn(addresses);
-
+            return new Response().badReturn("failed");
+        } else
+            return new Response().easyReturn(addresses);
     }
 
     @Override
@@ -110,13 +107,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     }
 
     @Override
-    public Response deleteAdderss(Address address) {
-        QueryWrapper<Address> addressQueryWrapper = new QueryWrapper<>();
-        addressQueryWrapper.eq("name",address.getName());
-        addressQueryWrapper.eq("phone",address.getPhone());
-        addressQueryWrapper.eq("address",address.getAddress());
-        addressQueryWrapper.eq("completed_address",address.getCompletedAddress());
-        int delete = addressMapper.delete(addressQueryWrapper);
+    public Response deleteAddress(String Id) {
+        int delete = addressMapper.deleteById(Id);
         if (delete > 0)
             return new Response().easyReturn("success");
         else

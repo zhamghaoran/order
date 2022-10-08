@@ -9,8 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address {
+    private String id;
     private String name;
     private String phone;
     private String address;
     private String  completedAddress;
+    @TableField("default")
+    private boolean _default;
+
 }

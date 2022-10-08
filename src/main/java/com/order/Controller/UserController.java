@@ -238,16 +238,16 @@ public class UserController {
          return userService.insertUser(user);
     }
     @RequestMapping("/get/address")
-    public Response getAddress(String name) {
-        return userService.selectAddress(name);
+    public Response getAddress() {
+        return userService.selectAddress();
     }
     @RequestMapping(value = "/add/address",method = RequestMethod.POST)
     public Response addAddress(Address address) {
         return userService.addAddress(address);
     }
     @RequestMapping(value = "/delete/address",method = RequestMethod.POST)
-    public Response deleteAddress(Address address) {
-        return userService.deleteAdderss(address);
+    public Response deleteAddress(String Id) {
+        return userService.deleteAddress(Id);
     }
 
 }

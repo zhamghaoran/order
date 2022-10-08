@@ -32,9 +32,9 @@ public interface UserService {
 
     Response insertUser(User user);
 
-    Response selectAddress(String name);
+    Response selectAddress();
 
     Response addAddress(Address address);
 
-    Response deleteAdderss(Address address);
+    Response deleteAddress(String Id);
 }

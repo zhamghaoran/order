@@ -1,4 +1,5 @@
-create table `order`.goods
+use `order`;
+create table goods
 (
     name        varchar(30)  not null,
     price       int          not null,
